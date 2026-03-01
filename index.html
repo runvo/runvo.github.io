@@ -365,8 +365,10 @@ runvo new my-app</pre>
     <div class="cmd-grid">
       <div class="cmd-row"><code>runvo new [name]</code> <span>Create new project (mkdir + git init)</span></div>
       <div class="cmd-row"><code>runvo add [name path desc]</code> <span>Register existing project</span></div>
+      <div class="cmd-row"><code>runvo clone &lt;url&gt; [name]</code> <span>Clone repo &amp; register</span></div>
       <div class="cmd-row"><code>runvo remove name</code> <span>Remove a project</span></div>
       <div class="cmd-row"><code>runvo list</code> <span>List all projects</span></div>
+      <div class="cmd-row"><code>runvo status</code> <span>Git status dashboard</span></div>
       <div class="cmd-row"><code>runvo config</code> <span>Edit config file</span></div>
     </div>
 
@@ -378,12 +380,21 @@ runvo new my-app</pre>
       <div class="cmd-row"><code>runvo prompt rm name</code> <span>Delete custom prompt</span></div>
     </div>
 
+    <h3>Remote control</h3>
+    <div class="cmd-grid">
+      <div class="cmd-row"><code>runvo send 1 "fix bug"</code> <span>Send prompt to session</span></div>
+      <div class="cmd-row"><code>runvo peek [n]</code> <span>View output without attaching</span></div>
+      <div class="cmd-row"><code>runvo attach [name|n]</code> <span>Quick attach to session</span></div>
+    </div>
+
     <h3>Other</h3>
     <div class="cmd-grid">
       <div class="cmd-row"><code>runvo setup</code> <span>Setup wizard</span></div>
       <div class="cmd-row"><code>runvo sessions</code> <span>Active tmux sessions</span></div>
+      <div class="cmd-row"><code>runvo kill [name|all]</code> <span>Kill session(s)</span></div>
       <div class="cmd-row"><code>runvo history</code> <span>Recent run history</span></div>
       <div class="cmd-row"><code>runvo ssh-auto</code> <span>Toggle SSH auto-launch</span></div>
+      <div class="cmd-row"><code>runvo doctor</code> <span>Check system health</span></div>
       <div class="cmd-row"><code>runvo update</code> <span>Update to latest</span></div>
       <div class="cmd-row"><code>runvo version</code> <span>Show version</span></div>
       <div class="cmd-row"><code>runvo help</code> <span>Full help</span></div>
