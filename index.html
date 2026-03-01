@@ -208,11 +208,69 @@
     /* Links */
     a { color: var(--cyan); }
 
+    /* Platform tabs */
+    .tabs { display: flex; gap: 0; margin: 20px 0 0; }
+    .tab {
+      padding: 10px 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      cursor: pointer;
+      font-size: 0.9em;
+      color: var(--dim);
+      transition: color 0.2s, background 0.2s;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--pink); background: var(--bg); border-bottom: 1px solid var(--bg); }
+    .tab-panels {
+      border: 1px solid var(--border);
+      border-radius: 0 8px 8px 8px;
+      background: var(--bg);
+      padding: 24px;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .tab-panel h4 { margin-bottom: 6px; }
+    .tab-panel p { color: var(--dim); font-size: 0.95em; }
+    .tab-panel pre {
+      background: var(--card);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin: 10px 0;
+      overflow-x: auto;
+      font-size: 0.9em;
+      color: var(--cyan);
+    }
+    .tab-panel code {
+      background: var(--card);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: var(--cyan);
+    }
+    .tab-panel .dl-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--cyan);
+      text-decoration: none;
+      font-size: 0.85em;
+      margin: 4px 4px 4px 0;
+      transition: border-color 0.2s;
+    }
+    .tab-panel .dl-link:hover { border-color: var(--pink); color: var(--pink); }
+
     /* Mobile */
     @media (max-width: 600px) {
       .hero h1 { font-size: 2.2em; }
       .cmd-row { grid-template-columns: 1fr; gap: 4px; }
       .step { padding-left: 60px; }
+      .tabs { flex-wrap: wrap; }
+      .tab { font-size: 0.8em; padding: 8px 14px; }
     }
   </style>
 </head>
@@ -272,74 +330,153 @@
 
     <!-- Setup Guide -->
     <h2>Setup Guide</h2>
-    <p style="color: var(--dim); margin-bottom: 20px;">Everything you need to run AI agents from your phone. Takes about 10 minutes.</p>
+    <p style="color: var(--dim); margin-bottom: 20px;">Two parts: install runvo on your computer, then connect from your phone. Takes about 10 minutes.</p>
 
-    <h3>Part 1: Install on your Mac</h3>
+    <!-- Part 1: Server Setup -->
+    <h3>Part 1: Install runvo on your computer</h3>
+
+    <div class="tabs" data-group="server">
+      <div class="tab active" data-tab="macos">macOS</div>
+      <div class="tab" data-tab="linux">Linux</div>
+      <div class="tab" data-tab="windows">Windows (WSL)</div>
+    </div>
+    <div class="tab-panels" data-group="server">
+
+      <div class="tab-panel active" data-tab="macos">
+        <h4>1. Install Homebrew (if you don't have it)</h4>
+        <pre>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</pre>
+
+        <h4>2. Install runvo</h4>
+        <pre>brew tap runvo/runvo && brew install runvo</pre>
+
+        <h4>3. Install an AI agent</h4>
+        <pre>npm install -g @anthropic-ai/claude-code   # or: pip install aider-chat</pre>
+
+        <h4>4. Enable SSH (for phone access)</h4>
+        <p><strong>System Settings → General → Sharing → Remote Login</strong> → ON</p>
+
+        <h4>5. Install Tailscale (for phone access)</h4>
+        <pre>brew install --cask tailscale</pre>
+        <p>Open the app, sign in. Note your IP (starts with <code>100.</code>).</p>
+        <p style="margin-top: 8px;">
+          <a href="https://tailscale.com/download/mac" class="dl-link">↓ Tailscale for Mac</a>
+        </p>
+      </div>
+
+      <div class="tab-panel" data-tab="linux">
+        <h4>1. Install dependencies</h4>
+        <pre>sudo apt update && sudo apt install -y tmux git curl</pre>
+        <p style="margin-top: 4px; font-size: 0.85em;">For Fedora/RHEL: <code>sudo dnf install tmux git curl</code></p>
+
+        <h4>2. Install runvo</h4>
+        <pre>curl -fsSL https://raw.githubusercontent.com/runvo/runvo/master/install.sh | bash</pre>
+        <p style="margin-top: 4px; font-size: 0.85em;">Or with Homebrew: <code>brew tap runvo/runvo && brew install runvo</code></p>
+
+        <h4>3. Install an AI agent</h4>
+        <pre>npm install -g @anthropic-ai/claude-code   # or: pip install aider-chat</pre>
+
+        <h4>4. Enable SSH (for phone access)</h4>
+        <pre>sudo apt install openssh-server && sudo systemctl enable --now ssh</pre>
+
+        <h4>5. Install Tailscale (for phone access)</h4>
+        <pre>curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up</pre>
+        <p style="margin-top: 8px;">
+          <a href="https://tailscale.com/download/linux" class="dl-link">↓ Tailscale for Linux</a>
+        </p>
+      </div>
+
+      <div class="tab-panel" data-tab="windows">
+        <h4>1. Install WSL</h4>
+        <p>Open <strong>PowerShell as Administrator</strong> and run:</p>
+        <pre>wsl --install</pre>
+        <p>Restart your computer. Ubuntu will be installed automatically.</p>
+
+        <h4>2. Inside WSL, install dependencies</h4>
+        <pre>sudo apt update && sudo apt install -y tmux git curl</pre>
+
+        <h4>3. Install runvo</h4>
+        <pre>curl -fsSL https://raw.githubusercontent.com/runvo/runvo/master/install.sh | bash</pre>
+
+        <h4>4. Install an AI agent</h4>
+        <pre>npm install -g @anthropic-ai/claude-code   # or: pip install aider-chat</pre>
+
+        <h4>5. Enable SSH inside WSL (for phone access)</h4>
+        <pre>sudo apt install openssh-server
+sudo sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config
+sudo service ssh start</pre>
+        <p style="font-size: 0.85em;">Uses port 2222 to avoid conflict with Windows SSH.</p>
+
+        <h4>6. Install Tailscale on Windows (for phone access)</h4>
+        <p>Install on Windows side. Your WSL shares the Tailscale network.</p>
+        <p style="margin-top: 8px;">
+          <a href="https://tailscale.com/download/windows" class="dl-link">↓ Tailscale for Windows</a>
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;"></div>
     <div class="steps">
       <div class="step">
-        <h4>Open Terminal on your Mac</h4>
-        <p>Press <code>Cmd + Space</code>, type <strong>Terminal</strong>, press Enter.</p>
-      </div>
-      <div class="step">
-        <h4>Install Homebrew (if you don't have it)</h4>
-        <p>Paste this and press Enter. Follow the prompts.</p>
-        <pre>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</pre>
-      </div>
-      <div class="step">
-        <h4>Install runvo</h4>
-        <pre>brew tap runvo/runvo
-brew install runvo</pre>
-      </div>
-      <div class="step">
-        <h4>Install an AI agent</h4>
-        <p>Pick one (Claude Code recommended):</p>
-        <pre>npm install -g @anthropic-ai/claude-code</pre>
-        <p style="margin-top: 8px;">Or Aider: <code>pip install aider-chat</code></p>
-      </div>
-      <div class="step">
-        <h4>Add your first project</h4>
-        <pre># Existing project:
-runvo add my-app ~/Projects/my-app "My App"
-
-# Or create from scratch:
-runvo new my-app</pre>
-        <p><code>new</code> creates the folder, runs <code>git init</code>, and registers it.</p>
-      </div>
-      <div class="step">
-        <h4>Test it works</h4>
-        <pre>runvo</pre>
+        <h4>Add your first project & test</h4>
+        <pre>runvo add my-app ~/Projects/my-app "My App"
+runvo</pre>
         <p>You should see your project listed. Type <code>1</code> and press Enter to start chatting.</p>
       </div>
     </div>
 
+    <!-- Part 2: Phone Setup -->
     <h3>Part 2: Access from your phone</h3>
+
+    <div class="tabs" data-group="phone">
+      <div class="tab active" data-tab="iphone">iPhone</div>
+      <div class="tab" data-tab="android">Android</div>
+    </div>
+    <div class="tab-panels" data-group="phone">
+
+      <div class="tab-panel active" data-tab="iphone">
+        <h4>1. Install Tailscale</h4>
+        <p>Sign in with the same account as your computer.</p>
+        <p style="margin-top: 8px;">
+          <a href="https://apps.apple.com/app/tailscale/id1470499037" class="dl-link">↓ App Store</a>
+        </p>
+
+        <h4>2. Install Termius (SSH client)</h4>
+        <p style="margin-top: 8px;">
+          <a href="https://apps.apple.com/app/termius-terminal-ssh-client/id549039908" class="dl-link">↓ App Store</a>
+        </p>
+
+        <h4>3. Connect</h4>
+        <p>In Termius: <strong>New Host</strong> → Hostname: your Tailscale IP → Username & password of your computer.</p>
+        <p style="margin-top: 8px;">Find your Tailscale IP on your computer:</p>
+        <pre>tailscale ip -4</pre>
+        <p style="font-size: 0.85em;">Windows WSL users: use port <code>2222</code> instead of default.</p>
+      </div>
+
+      <div class="tab-panel" data-tab="android">
+        <h4>1. Install Tailscale</h4>
+        <p>Sign in with the same account as your computer.</p>
+        <p style="margin-top: 8px;">
+          <a href="https://play.google.com/store/apps/details?id=com.tailscale.ipn" class="dl-link">↓ Google Play</a>
+        </p>
+
+        <h4>2. Install Termius (SSH client)</h4>
+        <p style="margin-top: 8px;">
+          <a href="https://play.google.com/store/apps/details?id=com.server.auditor.ssh.client" class="dl-link">↓ Google Play</a>
+        </p>
+
+        <h4>3. Connect</h4>
+        <p>In Termius: <strong>New Host</strong> → Hostname: your Tailscale IP → Username & password of your computer.</p>
+        <p style="margin-top: 8px;">Find your Tailscale IP on your computer:</p>
+        <pre>tailscale ip -4</pre>
+        <p style="font-size: 0.85em;">Windows WSL users: use port <code>2222</code> instead of default.</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px;"></div>
     <div class="steps">
       <div class="step">
-        <h4>Enable SSH on your Mac</h4>
-        <p>Go to <strong>System Settings → General → Sharing → Remote Login</strong> and turn it ON.</p>
-      </div>
-      <div class="step">
-        <h4>Install Tailscale</h4>
-        <p>Tailscale creates a private network between your devices. No port forwarding needed.</p>
-        <pre>brew install --cask tailscale</pre>
-        <p>Open the Tailscale app and sign in. Note the IP address shown (starts with <code>100.</code>).</p>
-      </div>
-      <div class="step">
-        <h4>Install Tailscale on iPhone</h4>
-        <p>Download <strong>Tailscale</strong> from the App Store. Sign in with the same account.</p>
-      </div>
-      <div class="step">
-        <h4>Install Termius on iPhone</h4>
-        <p>Download <strong>Termius</strong> from the App Store (free). This is your SSH app.</p>
-      </div>
-      <div class="step">
-        <h4>Connect from iPhone</h4>
-        <p>In Termius: <strong>New Host</strong> → paste your Tailscale IP → Username: your Mac username → Password: your Mac password.</p>
-        <p style="margin-top: 8px;">Find your Tailscale IP:</p>
-        <pre>tailscale ip -4</pre>
-      </div>
-      <div class="step">
-        <h4>Run runvo from your phone!</h4>
+        <h4>Start coding from your phone!</h4>
         <p>Once connected via Termius, just type:</p>
         <pre>runvo</pre>
         <p>Pick a project, start chatting with your AI agent. That's it!</p>
@@ -417,14 +554,15 @@ runvo new my-app</pre>
     <h3>What AI agents are supported?</h3>
     <p>Any CLI-based AI coding agent. Built-in support for <strong>Claude Code</strong> and <strong>Aider</strong>. Others work by setting the prompt flag in <code>~/.runvo/config</code>.</p>
 
+    <h3>What platforms are supported?</h3>
+    <p><strong>Server</strong> (where runvo runs): macOS, Linux, Windows (via WSL).<br>
+    <strong>Phone</strong> (remote access): iPhone and Android — using Tailscale + Termius (both free).</p>
+
     <h3>Do I need Tailscale?</h3>
-    <p>Only if you want phone access. On your Mac, runvo works without it. Tailscale is free and creates a secure tunnel — no port forwarding or static IPs needed.</p>
+    <p>Only for phone/remote access. On your computer, runvo works without it. Tailscale is free and creates a secure tunnel — no port forwarding or static IPs needed.</p>
 
     <h3>What if I disconnect?</h3>
     <p>Sessions run in tmux. Close Termius, lose wifi, whatever — your session keeps running. Reconnect and run <code>runvo</code> to pick up where you left off.</p>
-
-    <h3>Can I use this on Linux?</h3>
-    <p>Yes. Install tmux and an AI agent, then use the curl installer. Homebrew works on Linux too.</p>
 
     <div class="footer">
       <p>Made by <a href="mailto:admi@tranthaihoang.com">Tran Thai Hoang</a></p>
@@ -432,5 +570,17 @@ runvo new my-app</pre>
     </div>
 
   </div>
+  <script>
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const group = tab.parentElement.dataset.group;
+        const target = tab.dataset.tab;
+        document.querySelectorAll(`.tabs[data-group="${group}"] .tab`).forEach(t => t.classList.remove('active'));
+        document.querySelectorAll(`.tab-panels[data-group="${group}"] .tab-panel`).forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelector(`.tab-panels[data-group="${group}"] .tab-panel[data-tab="${target}"]`).classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>
